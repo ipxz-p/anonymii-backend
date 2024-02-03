@@ -11,7 +11,7 @@ app.use(urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(cors({
     origin: [
-        'http://localhost:3500',
+        'http://localhost:5173/',
         'https://main.d1yq82fldgl1db.amplifyapp.com',
         'https://anonymii-project.vercel.app/'
     ],
