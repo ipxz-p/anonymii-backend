@@ -9,7 +9,13 @@ const app = express()
 app.use(express.json())
 app.use(urlencoded({extended: false}))
 app.use(cookieParser())
-app.use(cors())
+app.use(cors({
+    origin: [
+        'http://localhost:3500',
+        'https://main.d1yq82fldgl1db.amplifyapp.com/'
+    ],
+    credentials: true
+}))
 app.get('/', (req, res)=>{
     res.send('555qwe')
 })
