@@ -1,21 +1,8 @@
 import express from 'express'
 import db from '../config/database.js'
 import { getUserByUsername } from '../models/user.js';
+import { reg } from '../controllers/auth.js';
 
 const router = express()
-router.get("/reg", (req, res) => {
-    const username = "pong"
-    try {
-        getUserByUsername(username, (err, results) => {
-            if(err){
-                res.send(err)
-            }else{
-                res.json(results)
-            }
-        })        
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
-    }
-});
+router.get("/reg", reg);
 export default router
