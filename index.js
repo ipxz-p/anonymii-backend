@@ -3,6 +3,8 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import authRoutes from './routes/auth.js'
+import {swaggerSpec} from './config/swaggerConfig.js'
+import swaggerUi from 'swagger-ui-express';
 dotenv.config()
 const PORT = process.env.PORT || 3500
 const app = express()
@@ -13,9 +15,8 @@ app.use(cors({
     origin: '*',
     credentials: true
 }))
-app.get('/', (req, res)=>{
-    res.send('555qwe')
-})
 app.use('/auth', authRoutes)
+
+app.use("/api-doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.listen(PORT, ()=>console.log(`Server runing on port ${PORT}`))
