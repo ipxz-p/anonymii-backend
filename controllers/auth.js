@@ -31,7 +31,7 @@ export const reg = (req, res) => {
     }
 }
 
-export const login = () => {
+export const login = (req, res) => {
     try {
         const {
             email,
