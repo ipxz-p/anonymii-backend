@@ -11,7 +11,7 @@ export const reg = (req, res) => {
             confirmUserPassword
         } = req.body
         db.query("SELECT * FROM `users` WHERE `email` = ?", 
-        email,
+        [email],
         function(err, results){
             if(err) throw err;
             if (results.length){
@@ -20,7 +20,7 @@ export const reg = (req, res) => {
             else{
                 const hashPassword = bcrypt.hashSync(userPassword, 10)
                 db.query("insert into `users` (`username`, `email`, `userPassword`) values(?, ?, ?)",
-                [username, email, userPassword])
+                [username, email, hashPassword])
                 res.status(200).json({
                     message: "Success"
                 })
@@ -38,7 +38,7 @@ export const login = (req, res) => {
             userPassword
         } = req.body
         db.query("select * from `users` where `email` = ?",
-        email,
+        [email],
         async function (err, results){
             if(err) throw err;
             if (!results.length){
