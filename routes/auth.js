@@ -1,7 +1,7 @@
 import express from 'express'
 import { login, reg } from '../controllers/auth.js';
 
-const router = express()
+const router = express.Router()
 /**
  * @openapi
  * /auth/reg:

@@ -27,7 +27,7 @@ export const reg = (req, res) => {
             }
         })
     } catch (error) {
-        console.log(error)
+        res.status(500).json(error)
     }
 }
 
@@ -48,15 +48,18 @@ export const login = (req, res) => {
             if(!match){
                 return res.status(400).json({message: "Email or password incorrect"})
             }
-            let accessToken = jwt.sign({email: email}, process.env.ACCESS_TOKEN, {
+            let accessToken = jwt.sign({
+                username: results[0].username,
+                email: results[0].email,
+                images: results[0].images
+            }, process.env.ACCESS_TOKEN, {
                 expiresIn: 84600
             })
             res.status(200).json({
-                userData: results,
                 accessToken: accessToken
             })
         })
     } catch (error) {
-        console.log(error)
+        res.status(500).json(error)
     }
 }
