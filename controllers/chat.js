@@ -1,6 +1,5 @@
 import db from "../config/database.js"
 
-
 export const createChat = async (req, res) => {
     try {
         const {
@@ -69,6 +68,51 @@ export const joinChat = async (req, res) => {
                     message: 'Success'
                 });
             });
+    } catch (error) {
+        res.status(400).json(error);
+    }
+}
+
+export const getAllChat = async (req, res) => {
+    try {
+        db.query("SELECT * FROM `chat_room`",
+            async function (err, results){
+                if(err) throw err;
+                res.status(200).json(results);
+            });
+    } catch (error) {
+        res.status(400).json(error);
+    }
+}
+
+export const getChatByEmail = async (req, res) => {
+    try {
+        const email = req.query.email
+        db.query(`SELECT * FROM chat_room where chat_room.chatId in 
+        (SELECT chatId FROM member_in_chat_room 
+        where member_in_chat_room.email = ?);`,
+            [email],
+            async function (err, results){
+                if(err) throw err;
+                res.status(200).json(results);
+            });
+    } catch (error) {
+        res.status(400).json(error);
+    }
+}
+
+export const leaveChat = (req, res) => {
+    try {
+        const {
+            email,
+            chatId,
+        } = req.body
+        db.query(`DELETE FROM member_in_chat_room
+        WHERE email = ? AND chatId = ?;`,
+        [email, chatId]);
+        res.status(200).json({
+            message: 'Success'
+        });
     } catch (error) {
         res.status(400).json(error);
     }

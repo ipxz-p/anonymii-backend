@@ -8,6 +8,7 @@ import swaggerUi from 'swagger-ui-express';
 import chatRoutes from './routes/chat.js'
 import messageRoutes from './routes/messages.js'
 import notificationRoutes from './routes/notification.js'
+import userRoutes from './routes/user.js'
 
 dotenv.config()
 
@@ -24,6 +25,7 @@ app.use('/auth', authRoutes)
 app.use('/chat', chatRoutes)
 app.use('/message', messageRoutes)
 app.use('/notification', notificationRoutes)
+app.use('/user', userRoutes)
 app.use("/api-doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.listen(PORT, ()=>console.log(`Server runing on port ${PORT}`))
