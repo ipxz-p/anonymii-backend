@@ -10,6 +10,11 @@ export const updateUser = (req, res) => {
             oldUserPassword,
             newUserPassword
         } = req.body
+        if(!email || !username){
+            return res.status(400).json({
+                message: "Please enter email and username"
+            })
+        }
         db.query("select * from `users` where `email` = ?",
         [email],
         async function (err, results){
