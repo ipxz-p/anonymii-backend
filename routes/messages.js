@@ -1,8 +1,9 @@
 import express from "express"
+import { getMessages, sendMessage } from "../controllers/messages.js"
 
 const router = express.Router()
 
-// router.post("/", sendMessage)
-// router.get('/:chatId', getMessages)
+router.post("/sendMessage", sendMessage)
+router.get('/getMessages', getMessages)
 
 export default router
