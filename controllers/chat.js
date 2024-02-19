@@ -75,7 +75,10 @@ export const joinChat = async (req, res) => {
 
 export const getAllChat = async (req, res) => {
     try {
-        db.query("SELECT * FROM `chat_room`",
+        db.query(`SELECT chat_room.*, count(member_in_chat_room.chatId) as user_count
+        FROM chat_room
+        JOIN member_in_chat_room ON chat_room.chatId = member_in_chat_room.chatId
+        group by member_in_chat_room.chatId`,
             async function (err, results){
                 if(err) throw err;
                 res.status(200).json(results);
@@ -88,9 +91,16 @@ export const getAllChat = async (req, res) => {
 export const getChatByEmail = async (req, res) => {
     try {
         const email = req.query.email
-        db.query(`SELECT * FROM chat_room where chat_room.chatId in 
-        (SELECT chatId FROM member_in_chat_room 
-        where member_in_chat_room.email = ?);`,
+        db.query(`SELECT chat_room.*
+        FROM chat_room
+        LEFT JOIN messages ON messages.chatId = chat_room.chatId
+        WHERE chat_room.chatId IN (
+            SELECT chatId
+            FROM member_in_chat_room
+            WHERE member_in_chat_room.email = ?
+        )
+        GROUP BY chat_room.chatId
+        ORDER BY MAX(messages.messagesTimestamp) DESC;`,
             [email],
             async function (err, results){
                 if(err) throw err;
@@ -110,6 +120,21 @@ export const leaveChat = (req, res) => {
         db.query(`DELETE FROM member_in_chat_room
         WHERE email = ? AND chatId = ?;`,
         [email, chatId]);
+        res.status(200).json({
+            message: 'Success'
+        });
+    } catch (error) {
+        res.status(400).json(error);
+    }
+}
+
+export const deleteChatroom = (req, res) => {
+    try {
+        const {
+            chatId,
+        } = req.body
+        db.query(`delete FROM chat_room where chatId = ?;`,
+        [chatId]);
         res.status(200).json({
             message: 'Success'
         });

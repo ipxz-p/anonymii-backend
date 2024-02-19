@@ -1,5 +1,5 @@
 import express from 'express'
-import { createChat, getAllChat, getChatByEmail, joinChat, leaveChat } from '../controllers/chat.js'
+import { createChat, deleteChatroom, getAllChat, getChatByEmail, joinChat, leaveChat } from '../controllers/chat.js'
 
 const router = express.Router()
 /**
@@ -106,5 +106,22 @@ router.get("/getChatByEmail", getChatByEmail)
  *         description: Success
  */
 router.delete('/leaveChat', leaveChat)
+/**
+ * @openapi
+ * /chat/deleteChatroom:
+ *  delete:
+ *     tags:
+ *     - chat
+ *     description: deleteChatroom
+ *     parameters:
+ *      - name: chatId
+ *        in: body
+ *        description: chatId
+ *        required: true
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.delete('/deleteChatroom', deleteChatroom)
 
 export default router
