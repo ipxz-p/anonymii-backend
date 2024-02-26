@@ -1,5 +1,5 @@
 import express from "express"
-import { updateUser } from "../controllers/user.js"
+import { getUser, updateUser } from "../controllers/user.js"
 
 const router = express.Router()
 
@@ -33,6 +33,22 @@ const router = express.Router()
  *         description: Success
  */
 router.put("/updateUser", updateUser)
-// router.get('/:chatId', getMessages)
+/**
+ * @openapi
+ * /user/getUser:
+ *  get:
+ *     tags:
+ *     - user
+ *     description: getUser
+ *     parameters:
+ *      - name: email
+ *        in: params
+ *        description: email
+ *        required: true
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.get('/getUser', getUser)
 
 export default router

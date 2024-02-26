@@ -39,3 +39,22 @@ export const updateUser = (req, res) => {
         res.status(400).json(error)
     }
 }
+
+export const getUser = (req, res) => {
+    try {
+        const email = req.query.email
+        if(!email){
+            return res.status(400).json({
+                message: "Please enter email"
+            })
+        }
+        db.query("select username, email, images from `users` where `email` = ?",
+        [email],
+        async function (err, results){
+            if(err) throw err;
+            res.status(200).json(results);
+        })
+    } catch (error) {
+        res.status(400).json(error)
+    }
+}
