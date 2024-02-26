@@ -27,7 +27,7 @@ export const getMessages = (req, res) => {
             message: "Please enter chatId"
         })
     }
-    db.query(`SELECT messages.*, users.username FROM messages join users on 
+    db.query(`SELECT messages.*, users.username, users.images FROM messages join users on 
     users.email = messages.senderEmail
     where chatId = ?;`,
     [chatId],
