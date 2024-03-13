@@ -76,10 +76,11 @@ export const joinChat = async (req, res) => {
 export const getAllChat = async (req, res) => {
     try {
         db.query(`SELECT chat_room.*, count(member_in_chat_room.chatId) as user_count,
-        (select images from users where email = chat_room.ownerEmail) as ownerImages
-        FROM chat_room
-        JOIN member_in_chat_room ON chat_room.chatId = member_in_chat_room.chatId
-        group by member_in_chat_room.chatId`,
+        (select username from users where users.email = chat_room.ownerEmail) as username,
+               (select images from users where email = chat_room.ownerEmail) as ownerImages
+               FROM chat_room
+               JOIN member_in_chat_room ON chat_room.chatId = member_in_chat_room.chatId
+               group by member_in_chat_room.chatId`,
             async function (err, results) {
                 if (err) throw err;
                 res.status(200).json(results);
@@ -93,19 +94,25 @@ export const getChatByEmail = async (req, res) => {
     try {
         const email = req.query.email
         db.query(`SELECT chat_room.*, 
-        (SELECT COUNT(member_in_chat_room.chatId)
-        FROM member_in_chat_room
-        WHERE member_in_chat_room.chatId = chat_room.chatId) as user_count,
-        (select images from users where email = chat_room.ownerEmail) as ownerImages
-        FROM chat_room
-        LEFT JOIN messages ON messages.chatId = chat_room.chatId
-        WHERE chat_room.chatId IN (
-            SELECT chatId
-            FROM member_in_chat_room
-            WHERE member_in_chat_room.email = ?
-        )
-        GROUP BY chat_room.chatId
-        ORDER BY MAX(messages.messagesTimestamp) DESC;`,
+        user_count.count_of_users,
+        users.username,
+        users.images AS ownerImages
+FROM chat_room
+LEFT JOIN (
+    SELECT chatId, COUNT(*) as count_of_users
+    FROM member_in_chat_room
+    GROUP BY chatId
+) as user_count ON chat_room.chatId = user_count.chatId
+LEFT JOIN users ON users.email = chat_room.ownerEmail
+LEFT JOIN messages ON messages.chatId = chat_room.chatId
+WHERE chat_room.chatId IN (
+    SELECT chatId
+    FROM member_in_chat_room
+    WHERE member_in_chat_room.email = ?
+)
+GROUP BY chat_room.chatId
+ORDER BY MAX(messages.messagesTimestamp) DESC;
+`,
             [email],
             async function (err, results) {
                 if (err) throw err;
